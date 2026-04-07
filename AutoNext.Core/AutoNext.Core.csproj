@@ -1,27 +1,218 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<!-- Target Framework -->
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>12.0</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Services\Messaging\" />
-    <Folder Include="Services\Caching\" />
-  </ItemGroup>
+	<!-- ============================================ -->
+	<!-- NUGET PACKAGE PROPERTIES                     -->
+	<!-- ============================================ -->
+	<PropertyGroup>
+		<!-- Package Identity -->
+		<PackageId>AutoNext.Core</PackageId>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-  </ItemGroup>
+		<!-- Package Metadata -->
+		<Authors>AutoNext Team</Authors>
+		<Company>AutoNext</Company>
+		<Product>AutoNext Core Library</Product>
+		<Copyright>Copyright © AutoNext 2024</Copyright>
+		<Description>
+			Enterprise core library for microservices architecture.
+			Includes PostgreSQL, RabbitMQ, Redis caching, CQRS, Repository pattern,
+			Unit of Work, Specification pattern, Serilog logging, Health checks,
+			Middleware pipeline, and comprehensive exception handling.
+		</Description>
+
+		<!-- Package Tags -->
+		<PackageTags>
+			microservice;
+			ddd;
+			cqrs;
+			event-sourcing;
+			postgresql;
+			rabbitmq;
+			redis;
+			repository-pattern;
+			unit-of-work;
+			specification-pattern;
+			serilog;
+			healthchecks;
+			dotnet-core;
+			net9.0
+		</PackageTags>
+
+		<!-- Package URLs -->
+		<PackageProjectUrl>https://github.com/AutoNextIndia/AutoNext.Core</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<!-- License -->
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+		<!-- Repository Info -->
+		<RepositoryUrl>https://github.com/AutoNextIndia/AutoNext.Core.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<!-- Release Notes -->
+		<PackageReleaseNotes>
+			Initial release of AutoNext.Core
+			- PostgreSQL Entity Framework Core support
+			- RabbitMQ messaging infrastructure
+			- Redis distributed caching
+			- Repository and Unit of Work patterns
+			- Specification pattern for queries
+			- Serilog integration
+			- Health checks
+			- Exception handling middleware
+			- Correlation ID tracking
+		</PackageReleaseNotes>
+
+		<!-- Build -->
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591;1573;1712</NoWarn>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<Deterministic>true</Deterministic>
+
+		<!-- Source Link -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+	</PropertyGroup>
+
+	<!-- ============================================ -->
+	<!-- DEBUG vs RELEASE                             -->
+	<!-- ============================================ -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>false</Optimize>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebugType>pdbonly</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>true</Optimize>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+
+	<!-- ============================================ -->
+	<!-- PACKAGE FILES                                -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<!-- Icon -->
+		<None Include="docs\icon.png" Pack="true" PackagePath="\" Condition="Exists('docs\icon.png')" />
+
+		<!-- README (physically in docs, packed at root) -->
+		<None Include="docs\README.md" Pack="true" PackagePath="\" Condition="Exists('docs\README.md')" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- DATABASE                                     -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- MESSAGING                                    -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+		<PackageReference Include="Polly" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- CACHING                                      -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0" />
+		<PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- LOGGING                                      -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="4.3.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- HEALTH CHECKS                                -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.Npgsql" Version="9.0.0" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- CORE UTILITIES                               -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.9.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- SOURCE LINK                                  -->
+	<!-- ============================================ -->
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- ANALYZERS                                    -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="all" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.25.0.90414" PrivateAssets="all" />
+	</ItemGroup>
+
+	<!-- ============================================ -->
+	<!-- EMBEDDED RESOURCES                           -->
+	<!-- ============================================ -->
+	<ItemGroup>
+		<EmbeddedResource Include="Configurations/*.json" />
+	</ItemGroup>
 
 </Project>
